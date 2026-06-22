@@ -78,3 +78,29 @@ plt.ylabel('Principal Component 2')
 plt.legend(title='Cluster')
 plt.grid(True)
 plt.show()
+
+print("--- Step 5: Analyzing & Labeling Clusters ---")
+
+# Calculate mean values for each cluster to understand their characteristics
+cluster_summary = df.groupby('Cluster')[features].mean().round(1)
+
+# Assign meaningful labels based on typical income/spending patterns
+def assign_label(row):
+    income = row['Annual Income (k$)']
+    score = row['Spending Score (1-100)']
+    
+    if income > 70 and score > 70:
+        return "Premium Buyers"
+    elif income > 70 and score < 40:
+        return "Careful Savers"
+    elif income < 40 and score > 70:
+        return "Budget Shoppers (High Spenders)"
+    elif income < 40 and score < 40:
+        return "Occasional Visitors"
+    else:
+        return "Average Consumers"
+
+cluster_summary['Assigned Persona'] = cluster_summary.apply(assign_label, axis=1)
+
+print("\nCluster Demographics and Spending Patterns:")
+print(cluster_summary)
