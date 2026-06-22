@@ -30,3 +30,34 @@ X = X.dropna()
 scaler = StandardScaler()
 X_scaled = scaler.fit_transform(X)
 print("Features successfully scaled using StandardScaler.\n")
+
+print("--- Step 3: Determining Optimal Clusters ---")
+
+# A. Elbow Method
+wcss = []
+K_range = range(2, 11)
+for k in K_range:
+    kmeans = KMeans(n_clusters=k, init='k-means++', random_state=42)
+    kmeans.fit(X_scaled)
+    wcss.append(kmeans.inertia_)
+
+# Plotting the Elbow Curve
+plt.figure(figsize=(8, 5))
+plt.plot(K_range, wcss, marker='o', linestyle='--')
+plt.title('Elbow Method for Optimal K')
+plt.xlabel('Number of Clusters (K)')
+plt.ylabel('WCSS (Within-Cluster Sum of Square)')
+plt.grid(True)
+plt.show()
+
+# B. Choosing K=5 based on standard Mall Customer datasets 
+optimal_k = 5
+kmeans = KMeans(n_clusters=optimal_k, init='k-means++', random_state=42)
+cluster_labels = kmeans.fit_predict(X_scaled)
+
+# Evaluate with Silhouette Score
+sil_score = silhouette_score(X_scaled, cluster_labels)
+print(f"Silhouette Score for K={optimal_k}: {sil_score:.3f}\n")
+
+# Attach clusters to original dataframe
+df['Cluster'] = cluster_labels
