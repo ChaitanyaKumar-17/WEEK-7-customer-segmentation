@@ -18,3 +18,15 @@ data = {
 df = pd.DataFrame(data)
 print(f"Dataset loaded with {df.shape[0]} customers.\n")
 
+print("--- Step 2: Cleaning & Scaling ---")
+# Drop irrelevant features for clustering (like CustomerID)
+features = ['Age', 'Annual Income (k$)', 'Spending Score (1-100)']
+X = df[features]
+
+# Handle missing values (if any)
+X = X.dropna()
+
+# Scale the features using StandardScaler
+scaler = StandardScaler()
+X_scaled = scaler.fit_transform(X)
+print("Features successfully scaled using StandardScaler.\n")
