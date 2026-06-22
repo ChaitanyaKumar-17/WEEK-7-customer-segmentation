@@ -61,3 +61,20 @@ print(f"Silhouette Score for K={optimal_k}: {sil_score:.3f}\n")
 
 # Attach clusters to original dataframe
 df['Cluster'] = cluster_labels
+
+print("--- Step 4: PCA & 2D Visualization ---")
+pca = PCA(n_components=2)
+X_pca = pca.fit_transform(X_scaled)
+
+df['PCA1'] = X_pca[:, 0]
+df['PCA2'] = X_pca[:, 1]
+
+# Plotting the clusters in 2D
+plt.figure(figsize=(10, 6))
+sns.scatterplot(x='PCA1', y='PCA2', hue='Cluster', palette='tab10', data=df, s=100)
+plt.title('Customer Segments (2D PCA View)')
+plt.xlabel('Principal Component 1')
+plt.ylabel('Principal Component 2')
+plt.legend(title='Cluster')
+plt.grid(True)
+plt.show()
